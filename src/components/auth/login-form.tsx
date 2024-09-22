@@ -9,8 +9,16 @@ import { useForm } from 'react-hook-form'
 import type * as z from 'zod'
 import { CardWrapper } from './card-wrapper'
 
+import { login } from '@/actions/login'
 import { Button } from '@/components/ui/button'
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
+import {
+	Form,
+	FormControl,
+	FormField,
+	FormItem,
+	FormLabel,
+	FormMessage,
+} from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { FormError } from '../form-error'
 import { FormSuccess } from '../form-success'
@@ -19,6 +27,8 @@ interface LoginFormProps {}
 
 export function LoginForm({}: LoginFormProps) {
 	const [isPending, startTransition] = useTransition()
+	const [error, setError] = useState<string | undefined>('')
+	const [success, setSuccess] = useState<string | undefined>('')
 	const form = useForm<z.infer<typeof LoginSchema>>({
 		resolver: zodResolver(LoginSchema),
 		defaultValues: {
@@ -28,10 +38,15 @@ export function LoginForm({}: LoginFormProps) {
 	})
 
 	const onSubmit = async (values: z.infer<typeof LoginSchema>) => {
+		setError('')
+		setSuccess('')
 		startTransition(async () => {
 			try {
-				console.log(JSON.stringify(values))
-				// const resp = await login(values, locale)
+				await login(values).then((data) => {
+					setSuccess(data.success)
+					setError(data.error)
+				})
+				// const resp = await login(values)
 				// if (resp?.error) setError(resp.error)
 				// form.reset()
 			} catch (error) {
@@ -58,7 +73,12 @@ export function LoginForm({}: LoginFormProps) {
 								<FormItem>
 									<FormLabel>Email</FormLabel>
 									<FormControl>
-										<Input {...field} type='email' placeholder='john.doe@exemplo.com' />
+										<Input
+											{...field}
+											type='email'
+											placeholder='john.doe@exemplo.com'
+											disabled={isPending}
+										/>
 									</FormControl>
 									<FormMessage />
 								</FormItem>
@@ -71,15 +91,15 @@ export function LoginForm({}: LoginFormProps) {
 								<FormItem>
 									<FormLabel>Password</FormLabel>
 									<FormControl>
-										<Input {...field} type='password' placeholder='******' />
+										<Input {...field} type='password' placeholder='******' disabled={isPending} />
 									</FormControl>
 									<FormMessage />
 								</FormItem>
 							)}
 						/>
 					</div>
-					<FormError message='' />
-					<FormSuccess message='' />
+					<FormError message={error} />
+					<FormSuccess message={success} />
 					<Button variant={'default'} className='w-full' disabled={isPending}>
 						<LoaderIcon className={!isPending ? 'hidden' : 'animate-spin mr-2'} />
 						<span>Login</span>
