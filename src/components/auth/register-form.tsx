@@ -10,6 +10,7 @@ import type * as z from 'zod'
 import { CardWrapper } from './card-wrapper'
 
 import { login } from '@/actions/login'
+import { register } from '@/actions/register'
 import { Button } from '@/components/ui/button'
 import {
 	Form,
@@ -44,7 +45,7 @@ export function RegisterForm({}: RegisterFormProps) {
 		setSuccess('')
 		startTransition(async () => {
 			try {
-				await login(values).then((data) => {
+				await register(values).then((data) => {
 					setSuccess(data.success)
 					setError(data.error)
 				})
@@ -117,7 +118,7 @@ export function RegisterForm({}: RegisterFormProps) {
 					<FormSuccess message={success} />
 					<Button variant={'default'} className='w-full' disabled={isPending}>
 						<LoaderIcon className={!isPending ? 'hidden' : 'animate-spin mr-2'} />
-						<span>Login</span>
+						<span>Create a account</span>
 					</Button>
 				</form>
 			</Form>
