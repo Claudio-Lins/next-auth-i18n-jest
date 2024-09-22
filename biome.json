@@ -25,5 +25,14 @@
 		"formatter": {
 			"trailingCommas": "none"
 		}
+	},
+	"linter": {
+		"enabled": true,
+		"rules": {
+			"recommended": true,
+			"a11y": { "useKeyWithClickEvents": "off" },
+			"suspicious": { "noEmptyInterface": "off" },
+			"correctness": { "noEmptyPattern": "off" }
+		}
 	}
 }
