@@ -24,13 +24,18 @@ export const {
 		},
 	},
 	callbacks: {
-		// async signIn({ user }) {
-		// 	const existingUser = await getUserById(user.id as string)
+		async signIn({ user, account }) {
+			// Allow OAuth accounts to sign in without email verification
+			if (account?.provider !== 'credentials') return true
 
-		// 	if (!existingUser || !existingUser.emailVerified) return false
+			// Check if user has verified their email
+			const existingUser = await getUserById(user.id as string)
+			if (!existingUser || !existingUser.emailVerified) return false
 
-		// 	return true
-		// },
+			// TODO: Add 2FA check here
+
+			return true
+		},
 
 		async session({ session, token }) {
 			if (token.sub && session.user) {
