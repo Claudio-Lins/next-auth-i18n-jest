@@ -4,6 +4,7 @@ import { cn } from '@/lib/utils'
 import { LoginSchema } from '@/schemas'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { LoaderIcon } from 'lucide-react'
+import { useSearchParams } from 'next/navigation'
 import { useState, useTransition } from 'react'
 import { useForm } from 'react-hook-form'
 import type * as z from 'zod'
@@ -26,6 +27,11 @@ import { FormSuccess } from '../form-success'
 interface LoginFormProps {}
 
 export function LoginForm({}: LoginFormProps) {
+	const searchParams = useSearchParams()
+	const urlError =
+		searchParams.get('error') === 'OAuthAccountNotLinked'
+			? 'Email is already use with different provider!'
+			: ''
 	const [isPending, startTransition] = useTransition()
 	const [error, setError] = useState<string | undefined>('')
 	const [success, setSuccess] = useState<string | undefined>('')
@@ -43,8 +49,8 @@ export function LoginForm({}: LoginFormProps) {
 		startTransition(async () => {
 			try {
 				await login(values).then((data) => {
-					setSuccess(data.success)
-					setError(data.error)
+					setSuccess(data?.success)
+					setError(data?.error)
 				})
 				// const resp = await login(values)
 				// if (resp?.error) setError(resp.error)
@@ -61,7 +67,7 @@ export function LoginForm({}: LoginFormProps) {
 			headerLabel='Welcome Back'
 			backButtonLabel='Do not have a account? '
 			backButtonHref='/auth/register'
-			showSocial={false}
+			showSocial={true}
 		>
 			<Form {...form}>
 				<form onSubmit={form.handleSubmit(onSubmit)} className='space-y-6'>
@@ -98,7 +104,7 @@ export function LoginForm({}: LoginFormProps) {
 							)}
 						/>
 					</div>
-					<FormError message={error} />
+					<FormError message={error || urlError} />
 					<FormSuccess message={success} />
 					<Button variant={'default'} className='w-full' disabled={isPending}>
 						<LoaderIcon className={!isPending ? 'hidden' : 'animate-spin mr-2'} />

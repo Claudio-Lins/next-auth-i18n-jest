@@ -9,10 +9,16 @@ interface CardWrapperProps {
 	headerLabel: string
 	backButtonLabel: string
 	backButtonHref: string
-	showSocial: boolean
+	showSocial?: boolean
 }
 
-export function CardWrapper({ children, headerLabel, backButtonHref, backButtonLabel, showSocial }: CardWrapperProps) {
+export function CardWrapper({
+	children,
+	headerLabel,
+	backButtonHref,
+	backButtonLabel,
+	showSocial,
+}: CardWrapperProps) {
 	return (
 		<Card className={cn('w-[400px] max-w-xs sm:max-w-sm shadow-md')}>
 			<CardHeader>
