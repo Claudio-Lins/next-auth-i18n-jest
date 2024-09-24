@@ -7,7 +7,7 @@ export default function LoginPage() {
 		<Suspense
 			fallback={
 				<div className='w-full h-full flex items-center justify-center'>
-					<BeatLoader color='#2563EB' />
+					<BeatLoader color='#00040a' />
 				</div>
 			}
 		>
