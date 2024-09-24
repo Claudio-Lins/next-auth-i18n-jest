@@ -1,9 +1,19 @@
-import { CardWrapper } from '@/components/auth/card-wrapper'
 import { NewPasswordForm } from '@/components/auth/new-password-form'
-import { cn } from '@/lib/utils'
+import { Suspense } from 'react'
+import { BeatLoader } from 'react-spinners'
 
 interface NewPasswordProps {}
 
 export default function NewPassword({}: NewPasswordProps) {
-	return <NewPasswordForm />
+	return (
+		<Suspense
+			fallback={
+				<div className='w-full h-full flex items-center justify-center'>
+					<BeatLoader color='#2563EB' />
+				</div>
+			}
+		>
+			<NewPasswordForm />
+		</Suspense>
+	)
 }

@@ -1,12 +1,17 @@
 import { LoginForm } from '@/components/auth/login-form'
-import { cn } from '@/lib/utils'
+import { Suspense } from 'react'
+import { BeatLoader } from 'react-spinners'
 
-interface LoginProps {}
-
-export default function Login({}: LoginProps) {
+export default function LoginPage() {
 	return (
-		<>
+		<Suspense
+			fallback={
+				<div className='w-full h-full flex items-center justify-center'>
+					<BeatLoader color='#2563EB' />
+				</div>
+			}
+		>
 			<LoginForm />
-		</>
+		</Suspense>
 	)
 }
