@@ -1,3 +1,4 @@
+import { getTwoFactorConfirmationByUserId } from '@/data/two-factor-confirmation'
 import { getUserById } from '@/data/user'
 import { prisma } from '@/lib/prisma'
 import { PrismaAdapter } from '@auth/prisma-adapter'
@@ -30,9 +31,23 @@ export const {
 
 			// Check if user has verified their email
 			const existingUser = await getUserById(user.id as string)
-			if (!existingUser || !existingUser.emailVerified) return false
+			if (!existingUser?.emailVerified) return false
 
 			// TODO: Add 2FA check here
+			if (existingUser?.isTwoFactorEnabled) {
+				const twoFactorConfirmation = await getTwoFactorConfirmationByUserId(
+					existingUser.id,
+				)
+				console.log('twoFactorConfirmation', twoFactorConfirmation)
+
+				if (!twoFactorConfirmation) return false
+
+				await prisma.twoFactorConfirmation.delete({
+					where: {
+						id: twoFactorConfirmation.id,
+					},
+				})
+			}
 
 			return true
 		},
